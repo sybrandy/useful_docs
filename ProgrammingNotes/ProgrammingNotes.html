@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Programming Notes</title>
+        <link href="cssreset-min.css" rel="stylesheet"/>
+        <style type="text/css">
+            nav
+            {
+                width: 250px;
+                background-color: #eee;
+                position: fixed;
+                right: 0px;
+            }
+            nav ol
+            {
+                padding-left: 25px;
+            }
+            nav li
+            {
+                list-style-type: lower-greek;
+            }
+            body > section
+            {
+                margin-right: 260px;
+            }
+            section > section
+            {
+                background-color: #bbf;
+                margin: 6px 4px;
+                padding: 4px;
+                border-radius: 8px;
+            }
+            h1
+            {
+                border-bottom: 1px solid black;
+                font-size: 2em;
+                font-variant: small-caps;
+                padding: 4px 4px 0px 4px;
+            }
+            h2
+            {
+                font-weight: bold;
+                font-size: 1.5em;
+                padding: 4px;
+                border-bottom: 1px dotted black;
+            }
+            p
+            {
+                padding: 4px 6px;
+            }
+            ul
+            {
+                padding-left: 30px;
+            }
+            ul li
+            {
+                list-style: disc;
+            }
+            pre
+            {
+                margin: 4px;
+                padding: 4px;
+                background-color: black;
+                color: white;
+                border: 4px inset #eee;
+                border-radius: 12px 0px;
+            }
+            q:before, q:after { content: '"'; }
+            strong { font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <ol>
+                <li><a href="#general">General</a></li>
+                <ol>
+                    <li><a href="#generalqh">Quick Hits</a></li>
+                    <li><a href="#generalif">Avoid else statements if
+                        possible</a></li>
+                    <li><a href="#phantom">Phantom Types</a></li>
+                    <li><a href="#faster">Faster Loops</a></li>
+                    <li><a href="#security">Security</a></li>
+                    <li><a href="#string_concat">String Concatenation</a></li>
+                </ol>
+                <li><a href="#java">Java Specific</a></li>
+                <ol>
+                    <li><a href="#javagen">General</a></li>
+                    <li><a href="#doublebrace">Double-Brace
+                        Initialization</a></li>
+                    <li><a href="#javaperf">Performance</a></li>
+                    <li><a href="#unchecked">Unchecked Exceptions</a></li>
+                    <li><a href="#javaexcphand">Default Exception Handler
+                        (Threads)</a></li>
+                </ol>
+                <li><a href="#dlang">D Programming Language Specific</a></li>
+                <ol>
+                    <li><a href="#dqh">Quick Hits</a></li>
+                    <li><a href="#dloops">Loops</a></li>
+                    <li><a href="#dstructs">Struct Template</a></li>
+                    <li><a href="#immVsConstParams">Immutable vs. Const
+                        Parameters</a></li>
+                </ol>
+                <li><a href="#scala">Scala</a></li>
+                <ol>
+                    <li><a href="#sgotchas">Gotchas</a></li>
+                </ol>
+            </ol>
+        </nav>
+        <section>
+            <h1 id="general">General</h1>
+            <section>
+                <h2 id="generalqh">Quick Hits</h2>
+                <ul>
+                    <li>Good list of best practices: <a
+                        href="https://github.com/thomasdavis/best-practices">Best-Practices</a></li>
+                    <li><a
+                        href="https://en.wikipedia.org/wiki/Unix_philosophy">Unix Philosophy</a></li>
+                    <li>Think functional!</li>
+                    <ul>
+                        <li>Try to write functions in a functional style where
+                        output is only dependent on the input.</li>
+                    </ul>
+                    <li>Leverage dependency injection and interfaces whenever
+                    possible.</li>
+                    <li>Catch exceptions at the lowest level possible and wrap
+                    them as needed.</li>
+                    <li>Leverage polymorphism instead of if statements if
+                    possible.</li>
+                    <ul>
+                        <li>Code can be more expandable and cleaner since all
+                        "conditions" are wrapped in their own classes.</li>
+                        <li>Only good if the various types of objects can be
+                        created without much effort.  Factory?</li>
+                        <li><a
+                            href="http://stackoverflow.com/questions/234458/do-polymorphism-or-conditionals-promote-better-design">
+                            http://stackoverflow.com/questions/234458/do-polymorphism-or-conditionals-promote-better-design</a></li>
+                    </ul>
+                    <li>Related to the previous item, leverage the <a
+                        href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor
+                        pattern</a> if navigating through a number of similar,
+                        but different types of objects.</li>
+                    <li>Use make for automated tasks/workflows.</li>
+                    <li>Never build large apps.  Write smaller components,
+                    then assemble them into one larger application.</li>
+                    <ul>
+                        <li>Unix-style command chaining.</li>
+                        <li>Serivce oriented architectures.</li>
+                        <li>Storm-like topologies with small components
+                        distributed over many machines working as one
+                        system.</li>
+                    </ul>
+                    <li>Prefer simplicity over complexity.  The easier to
+                    read/implement/understand/explain, the better.</li>
+                    <li>Fail fast and provide as much info as possible about
+                    why it failed.</li>
+                    <li>If possible, try to put benchmarks in the unit tests
+                    and track how performance of the methods change over
+                    time.</li>
+                    <li><q>A method should either change state of an object, or
+                    return a result, but not both. In other words, asking the
+                    question should not change the answer. More formally,
+                    methods should return a value only if they are
+                    referentially transparent and hence possess no side
+                    effects.</q></li>
+                    <ul>
+                        <li><strong>Commands</strong> change the state of an
+                        object or entire system.</li>
+                        <li><strong>Queries</strong> return results and do not
+                        change the state of an object.</li>
+                    </ul>
+                    <li>Prefer using structs/classes that represent messages
+                    vs. functions that require multiple parameters.</li>
+                    <li>If an interface has one function and will never have
+                    more than one function, then use a static/regular function
+                    instead.</li>
+                    <li>Prefer function composition over other solutions.</li>
+                    <ul>
+                        <li>E.g. Partial function application for methods that
+                        require an argument, but the same values is used
+                        repeatedly, such as a database connection.</li>
+                        <li>Use a "Bootstrap" method to set these up upon
+                        program startup.  E.g. very simple dependency
+                        injection.</li>
+                        <li>Perhaps a singleton class that handles the
+                        instantiation of the various classes that are defined
+                        at startup and required by many aspects of the system.
+                        Then, compose functions using calls to singleton
+                        methods that return the correct object.</li>
+                        <li><a
+                            href="http://www.infoq.com/presentations/8-lines-code-refactoring?utm_source=infoq&utm_medium=videos_homepage&utm_campaign=videos_row3">8
+                            Lines of Code</a>
+                        </li>
+                    </ul>
+                    <li>Use the <a
+                        href="https://en.wikipedia.org/wiki/Null_Object_pattern">Null
+                        Object Pattern</a> when possible for object-oriented
+                    code</li>
+                    <li>Minimize memory allocations.  Extending a buffer is
+                    O.K.  Deleting is not.  Should be done carefully and only
+                    if needed.</li>
+                    <li>Document why specific versions of libraries are used
+                    if multiple are available and the reason isn't simply "I
+                    wanted to use the latest version."  Pom.xml files and
+                    similar are good for this since it keeps the reasoning
+                    with the dependency itself.</li>
+                </ul>
+            </section>
+            <section>
+                <h2 id="generalif">Avoid else statements if possible</h2>
+                <p>Avoiding else statements can reduce the amount of code
+                written by having exception cases handled first, then the
+                common case executed.  Compare:</p>
+                <pre>public void put(String key, String value) throws IllegalArgumentException
+{
+    if (map.containsKey(key))
+    {
+        if (dstrat.isValidPut(key, value))
+        {
+            map.put(key, dstrat.processPut(key, value));
+        }
+        else
+        {
+            throw new IllegalArgumentException(dstrat.getValidationMessage());
+        }
+    }
+    else
+    {
+        throw new IllegalArgumentException(key + " is not a valid key.");
+    }
+}</pre>
+
+                <p>and:</p>
+                <pre>public void put(String key, String value) throws IllegalArgumentException
+{
+    if (!map.containsKey(key))
+    {
+        throw new IllegalArgumentException(key + " is not a valid key.");
+    }
+
+    if (!dstrat.isValidPut(key, value))
+    {
+        throw new IllegalArgumentException(dstrat.getValidationMessage());
+    }
+
+    map.put(key, dstrat.processPut(key, value));
+}</pre>
+            </section>
+            <section>
+                <h2 id="phantom">Phantom Types</h2>
+                <p>Leverage the type system in a language via templates to
+                enforce proper state of objects/structs at compile-time.</p>
+                <pre>public interface FlightStatus {
+}
+
+public interface Flying extends FlightStatus{
+}
+
+public interface Landed extends FlightStatus {
+}
+
+public class Plane&lt;Status extends FlightStatus&gt; {
+
+    private Plane(){
+        // blah blah blah
+    }
+
+    public Plane(Plane&lt;? extends FlightStatus &gt; p){
+        //copy whatever info we need
+    }
+
+    public static Plane&lt;Landed&gt; newPlane(){
+        return new Plane&lt;Landed&gt;();
+    }
+
+}
+
+public class AirTrafficController {
+    public static Plane&lt;Landed&gt; land(Plane&lt;Flying&gt; p) {
+        return new Plane&lt;Landed&gt;(p);
+    }
+
+    public static Plane&lt;Flying&gt; takeOff(Plane&lt;Landed&gt; p) {
+        return new Plane&lt;Flying&gt;(p);
+    }
+
+    public static void main(String[] args){
+        Plane&lt;Landed&gt; p=Plane.newPlane();
+
+        Plane&lt;Flying&gt; fly=takeOff(p);
+        Plane&lt;Landed&gt; land=land(fly);
+
+        //doesn't compile:
+        //Plane&lt;Landed&gt; reallyLanded=land(land);
+        //Plane&lt;Flying&gt; reallyFlying=takeOff(fly);
+
+    }
+}</pre>
+            </section>
+            <section>
+                <h2 id="faster">Faster Loops</h2>
+                <p>Some CPUs have the ability to check for 0 and jump
+                efficiently, so the following loop may be faster in some
+                situations:</p>
+                <pre>
+while (--i > 0)
+{
+    ...
+}</pre>
+            </section>
+            <section>
+                <h2 id="security">Security</h2>
+                <ul>
+                    <li>Design and write your code so it isn't measurably
+                    quicker or slower when errors occur, even if this means
+                    performing redundant computations.</li>
+                    <li>Use a stream cipher, not a block cipher, to avoid the
+                    need for plaintext padding.</li>
+                    <li>Checksum the data after encryption, rather than
+                    encrypting the checksum. This ensures that the quantity of
+                    data to be checksummed does not depend on the
+                    plaintext.</li>
+                    <li>Use an authenticated encryption algorithm, like
+                    AES-GCM, that combines checksumming and ciphering.</li>
+                </ul>
+            </section>
+            <section>
+                <h2 id="string_concat">String Concatenation</h2>
+                <p>Use this pattern:</p>
+                <pre>
+StringBuilder sb = new StringBuilder("Ingredients: ");
+
+if (ingredients.length &gt; 0) {
+	sb.append(ingredients[0]);
+	for (int i = 1; i &lt; ingredients.length; i++) {
+		sb.append(", ");
+		sb.append(ingredients[i]);
+	}
+}
+
+return sb.toString();</pre>
+                <p>Vs. this pattern:</p>
+                <pre>
+StringBuilder sb = new StringBuilder("Ingredients: ");
+
+for (int i = 0; i &lt; ingredients.length; i++) {
+	if (i &gt; 0) {
+		sb.append(", ");
+	}
+	sb.append(ingredients[i]);
+}
+
+return sb.toString();</pre>
+            </section>
+        </section>
+        <section>
+            <h1 id="java">Java Specific</h1>
+            <section>
+                <h2 id="javagen">General</h2>
+                <ul>
+                    <li>If supported by the API, ensure the charset is
+                    provided to a stream/string constructor/method.</li>
+                    <li>Jconsole = Monitor running process locally or remotely
+                    via JMX.</li>
+                </ul>
+            </section>
+            <section>
+                <h2 id="doublebrace">Double-Brace Initialization</h2>
+                <pre>Set<String> s = new HashSet<String>() {{
+    add("foo");
+    add("bar");
+    add("baz");
+}};</pre>
+                <p>Note: This does create an anonymous sub-class which can
+                cause issues under certain situations.</p>
+            </section>
+            <section>
+                <h2 id="javaperf">Performance</h2>
+                <ul>
+                    <li> Used buffered I/O when possible</li>
+                    <li> Consider using NIO.</li>
+                    <li>Use StringBuilders or StringBuffers (sync) instead of
+                    Strings when possible.  Build up the "String" using a
+                    StringBuilder/Buffer and create the String only when
+                    done.</li>
+                    <ul>
+                        <li>In extreme situations, perhaps look into interning
+                        strings.</li>
+                    </ul>
+                    <li>If possible, set the length of a collection before
+                    using it.</li>
+                    <li>Use efficient primative collections when possible.
+                    (Trove for pre-Java 8)</li>
+                    <li>Parse from Streams vs. parsing data in memory.</li>
+                    <li>Instead of returning collections to be added to a
+                    collection, simply modify the collection directly.  Should
+                    be careful  to ensure that the lack of immutability
+                    doesn't cause any other problems.</li>
+                    <li> Avoid object creation in loops.</li>
+                    <li> Consider object pools for complex objects.</li>
+                    <li> ArrayList/HashMap are faster than Vector/Hashtable
+                    (synchronized)</li>
+                    <ul>
+                        <li> Arrays are even faster</li>
+                    </ul>
+                    <li> Minimize calls to Date/Calendar/similar.</li>
+                    <li> Static methods are faster than creating an object
+                    just to access a method.</li>
+                    <li> "It is faster to create an array of primitive data
+                    type than to initialize such kind of array"</li>
+                    <li> "It is faster to create an array of complex data type
+                    than to clone such kind of array"</li>
+                    <li> When done with an object, set it to null so that it
+                    can be gc'd.</li>
+                    <li> Primitive data types are faster than wrapper
+                    classes.</li>
+                    <li> Local variables are faster than class variables.</li>
+                    <li> Use lazy evaluation/object creation if possible.</li>
+                    <li> String literals are faster than 'new
+                    String("...");'</li>
+                    <li> Concatenating string literals with "+" is faster than
+                    with SB.append or String.concat as it's done at
+                    compile-time vs.  runtime.</li>
+                    <li> Handling exceptions locally to a method is faster
+                    than letting it propogate upwards.</li>
+                    <ul>
+                        <li> It may be necessary to let it propogate, so keep
+                        that in mind.</li>
+                    </ul>
+                    <li> Copy arrays with System.arraycopy vs. a loop.</li>
+                    <li> Singleton Registry: A HashMap containing all
+                    instances of classes that should be singletons.</li>
+                    <ul>
+                        <li> Key is the class name.</li>
+                        <li> Value is the class instance.</li>
+                    </ul>
+                    <li> ThreadLocal provides thread-local values.</li>
+                </ul>
+            </section>
+            <section>
+                <h2 id="unchecked">Unchecked Exceptions</h2>
+                <p>Consider using unchecked exceptions vs. checked exceptions.
+                This results in much less code since one doesn't have to add
+                exception declarations to every method.  Also, only catch
+                specific exceptions if there is behavior that must be
+                performed specific to that exception.  Consider using a
+                class similar to below to collect error information:</p>
+                <pre>import java.util.ArrayList;
+import java.util.List;
+
+public class EnrichableException extends RuntimeException {
+    public static final long serialVersionUID = -1;
+
+    protected List<InfoItem> infoItems =
+            new ArrayList<InfoItem>();
+
+    protected class InfoItem{
+        public String errorContext = null;
+        public String errorCode  = null;
+        public String errorText  = null;
+        public InfoItem(String contextCode, String errorCode,
+                                     String errorText){
+
+            this.errorContext = contextCode;
+            this.errorCode   = errorCode;
+            this.errorText   = errorText;
+        }
+    }
+
+
+    public EnrichableException(String errorContext, String errorCode,
+                               String errorMessage){
+
+        addInfo(errorContext, errorCode, errorMessage);
+    }
+
+    public EnrichableException(String errorContext, String errorCode,
+                               String errorMessage, Throwable cause){
+        super(cause);
+        addInfo(errorContext, errorCode, errorMessage);
+    }
+
+    public EnrichableException addInfo(
+        String errorContext, String errorCode, String errorText){
+
+        this.infoItems.add(
+            new InfoItem(errorContext, errorCode, errorText));
+        return this;
+    }
+
+    public String getCode(){
+        StringBuilder builder = new StringBuilder();
+
+        for(int i = this.infoItems.size()-1 ; i >=0; i--){
+            InfoItem info =
+                this.infoItems.get(i);
+            builder.append('[');
+            builder.append(info.errorContext);
+            builder.append(':');
+            builder.append(info.errorCode);
+            builder.append(']');
+        }
+
+        return builder.toString();
+    }
+
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(getCode());
+        builder.append('\n');
+
+
+        //append additional context information.
+        for(int i = this.infoItems.size()-1 ; i >=0; i--){
+            InfoItem info =
+                this.infoItems.get(i);
+            builder.append('[');
+            builder.append(info.errorContext);
+            builder.append(':');
+            builder.append(info.errorCode);
+            builder.append(']');
+            builder.append(info.errorText);
+            if(i>0) builder.append('\n');
+        }
+
+        //append root causes and text from this exception first.
+        if(getMessage() != null) {
+            builder.append('\n');
+            if(getCause() == null){
+                builder.append(getMessage());
+            } else if(!getMessage().equals(getCause().toString())){
+                builder.append(getMessage());
+            }
+        }
+        appendException(builder, getCause());
+
+        return builder.toString();
+    }
+
+    private void appendException(
+            StringBuilder builder, Throwable throwable){
+        if(throwable == null) return;
+        appendException(builder, throwable.getCause());
+        builder.append(throwable.toString());
+        builder.append('\n');
+    }</pre>
+            </section>
+            <section>
+                <h2 id="javaexcphand">Default Exception Handler (Threads)</h2>
+                <p>This is done to ensure that any threads that are executed
+                within a program have their exceptions captured and reported
+                in the event they aren't in the thread itself.</p>
+                <pre>public class MyApp {
+
+    ...
+
+    public MyApp() {
+        Thread.setDefaultUncaughtExceptionHandler(
+                new Thread.UncaughtExceptionHandler() {
+                    @Override public void uncaughtException(Thread t, Throwable e) {
+                        System.out.println(t.getName()+": "+e);
+                        MyWorker worker = new MyWorker();
+                        worker.start();
+                    }
+                });
+        
+        MyWorker worker = new MyWorker();
+        worker.start();
+    }
+    
+    public static void main(String[] args) {
+        MyApp te = new MyApp();
+    }
+}</pre>
+            </section>
+        </section>
+        <section>
+            <h1 id="dlang">D Programming Language Specific</h1>
+            <section>
+                <h2 id="dqh">Quick Hits</h2>
+                <ul>
+                    <li>Remember to look at std.functional!</li>
+                    <li>Lambdas: <code>var foo = (int a) => { a * 2;
+                        };</code></li>
+                    <li>Create associative array: <code>auto hash = ["foo":42,
+                        "bar":100];</code></li>
+                    <li>Leverage component style programming if possible.
+                    E.g. <code>A.foo().bar().baz();</code></li>
+                    <li>Leverage ranges when possible, though keep in mind
+                    they may not be the fastest solution.</li>
+                    <li>Related to prev bullet, use static asserts to make
+                    sure you're getting the right kind of Range as a parameter
+                    to a function.  E.g. <code>static assert
+                        isInputRange!(Range));</code></li>
+                    <li>Prefer structs over classes unless you need
+                    classes.</li>
+                    <ul>
+                        <li>Structs are on the stack vs. the heap.</li>
+                        <li>Classes have interfaces, inheritance, etc.</li>
+                    </ul>
+                    <li>Leverage CTFE to generate static data instead of
+                    typing it by hand.</li>
+                    <li>Remember that text files can be imported at compile
+                    time: <code>string file = import("filename");</code></li>
+                    <li>Remember to use the following constructs as
+                    needed:</li>
+                    <ul>
+                        <li>scope - Ensure that something, such as closing
+                        filehandles, occurs without having to write a
+                        try/catch block.</li>
+                        <li>enforce and similar - Throw/capture exceptions,
+                        such as throwing an exception if a file doesn't
+                        exist. (std.exception)</li>
+                    </ul>
+                    <li>Prefer compile-time regular expressions.</li>
+                    <li>std.concurrency doesn't work with pointers or data
+                    that is not shared or immutable.  This means it cannot
+                    work with classes.</li>
+                    <li>Prefer returning mutable data vs. immutable.  The
+                    caller can decide if the result should be immutable.</li>
+                    <li>Consider the assumeUnique function in std.exception
+                    for returning immutable arrays from pure functions.</li>
+                    <ul>
+                        <li>
+                            <pre>
+/* This function returns a unique string . */
+dchar [] foo() {
+    /* ... */
+}
+// ...
+auto m = foo();
+immutable i = assumeUnique(m);
+assert (m is null); </pre>
+                        </li>
+                        <li>assumeUnique clears the original value as it
+                        assumes that all further use of that value will be
+                        done through the immutable copy.</li>
+                    </ul>
+                    <li>If a local variable is never mutated, make it const,
+                    not immutable.</li>
+                    <li>Make the parameter reference to immutable if that is
+                    how you will use it anyway.  It is fine to ask a favor
+                    from the caller.</li>
+                    <ul>
+                        <li>E.g.: <code>void foo(immutable T bar)</code></li>
+                        <li>Prefer const in all other situations where the
+                        function will not modify the incoming value.</li>
+                    </ul>
+                    <li>Prefer type constructor syntax to type qualifier
+                    syntax</li>
+                    <ul>
+                        <li>E.g.: <code>auto s1 = immutable(S)(42);</code>
+                        instead of <code>immutable s0 = S(42);</code></li>
+                    </ul>
+                    <li>Use <code>assertNotThrown</code> and
+                    <code>assertThrown</code> for testing if an exception is
+                    thrown.</li>
+                    <li>Separate out dependencies.</li>
+                    <ul>
+                        <li>Use <a
+                            href="http://dsource.org/projects/dmocks/wiki/DMocks">dmock</a>.</li>
+                        <li>Perhaps leverage template parameters to pass in
+                        object?</li>
+                        <li><a
+                            href="https://github.com/bgertzfield/deject">deject</a></li>
+                    </ul>
+                    <li>Use the .get method on associative arrays to be able
+                    to get a default value if the element doesn't exist.</li>
+                    <li>For templated methods, remember to use template
+                    constraints to check the types of the parameters, if
+                    necessary.</li>
+                    <ul>
+                        <li><code>void foo(T bar) if (isBaz!T) {...}</code></li>
+                        <li><a
+                            href="http://dlang.org/template.html#Constraint">Template
+                            Constraints</a></li>
+                    </ul>
+                    <li>'~' uses GC, so if not available, problems.</li>
+                    <li>Fibers have small stacks, therefore they may not be
+                    able to handle large buffers if they are statically
+                    allocated.</li>
+                    <li>Check out this link for some cool stuff: <a
+                        href="http://nomad.so/2014/08/hidden-treasure-in-the-d-standard-library/">Hidden
+                        treasure in the D standard library</a>.  Scoped is
+                    particullarly cool.</li>
+                </ul>
+            </section>
+            <section>
+                <h2 id="dloops">Loops</h2>
+                <p>Try to prefer foreach loops when possible.  For
+                example:</p>
+                <pre>
+foreach (i; 0..100)
+{
+    ...
+}</pre>
+                <p>vs.</p>
+                <pre>
+for (int i = 0; i < 100; i++)
+{
+    ...
+}</pre>
+                <p>Also, if you need a value and an index, the following
+                works:</p>
+                <pre>
+foreach (i, v; someRange)
+{
+    ...
+}</pre>
+            </section>
+            <section>
+                <h2 id="dstructs">Struct Template</h2>
+                <p>Here's a potential template for creating a struct.</p>
+                <pre>
+struct S {
+    int [] data;
+
+    this (string s) {
+        data.length = 42;
+    }
+
+    this(this) {
+        // post-blit to make a correction. e.g.
+        data = data.dup;
+    }
+
+    this(S rhs) {
+        // 'rhs' is a copy of the argument; do move...
+    }
+
+    this(ref const (S) rhs) {
+        // 'rhs' is an lvalue; do copy...
+    }
+
+    ref S opAssign(S rhs) {
+        // 'rhs' is a copy of the argument; swap with this...
+        return this ;
+    }
+
+    ref S opAssign( ref const (S) rhs) {
+        // 'rhs' is an lvalue; copy to this and destroy old state ...
+        return this ;
+    }
+} </pre>
+            </section>
+            <section>
+                <h2 id="immVsConstParams">Immutable vs. Const Parameters</h2>
+                <p>If a function accepting const parameters then calls a
+                function that accepts an immutable parameter, a copy will be
+                made of the data.  This is unnecessary if the data is already
+                immutable.  A template solution, like the one below, can be
+                used to prevent this copy if it's not needed.</p>
+                <pre>
+import std.conv;
+import std.traits;
+void prettyPrint (T) (T str) if (isSomeString!T)
+{
+    // ...
+    usefulFunction(to!string (str));
+    // no-op if already immutable
+} </pre>
+            </section>
+        </section>
+        <section>
+            <h1 id="scala">Scala</h1>
+            <section>
+                <h2 id="sgotchas">Gotchas</h2>
+                <ul>
+                    <li>Scala/Java interporability:</li>
+                    <ul>
+                        <li>Executing external processes doesn't work when
+                        using the Scala methods.  E.g:
+                        <pre>"ls".run().exitValue</pre></li>
+                        <li>foreach iterators and for loops don't work.  While
+                        loops do work.  E.g.:
+                        <pre>while (&lt;condition&gt;) {...}</pre></li>
+                    </ul>
+                </ul>
+            </section>
+        </section>
+    </body>
+</html>

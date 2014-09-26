@@ -1,0 +1,4 @@
+- Design and write your code so it isn't measurably quicker or slower when errors occur, even if this means performing redundant computations.
+- Use a stream cipher, not a block cipher, to avoid the need for plaintext padding.
+- Checksum the data after encryption, rather than encrypting the checksum. This ensures that the quantity of data to be checksummed does not depend on the plaintext.
+- Use an authenticated encryption algorithm, like AES-GCM, that combines checksumming and ciphering.

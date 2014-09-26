@@ -1,0 +1,327 @@
+\documentclass[landscape]{article}
+
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+
+\geometry{top=.5in,left=.5in,right=.5in,bottom=.5in}
+
+\begin{document}
+
+\begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
+    \begin{flushleft}
+        \textbf{\large{Git Workflow (Basic)}}
+        \rule{2.9in}{.5pt}
+        \normalsize{Change ``master'' to the name of your main development
+        branch if it is not ``master''}
+        \small
+        \begin{enumerate}
+            \item{\verb!git pull!}
+            \item{\verb!git checkout -b <TASK-ID> origin/master!}
+            \item{Do the following periodically:}
+                \begin{itemize}
+                    \item{Commit changes (\verb!git add! and \verb!git commit!)}
+                    \item{Get new changes (\verb!git pull!)}
+                \end{itemize}
+            \item{\verb!git checkout master!}
+            \item{\verb!git pull!}
+            \item{\verb!git merge --no-ff --no-commit <TASK-ID>!}
+            \item{\verb!git commit!}
+            \item{\verb!git push!}
+        \end{enumerate}
+
+        \textbf{\large{Advanced Workflow Changes/Notes}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{itemize}
+            \item{Use \verb!git pull --rebase! to pull down changes without an
+                additional merge commit.}
+                \begin{itemize}
+                    \item{NOTE: Uncommitted changes need to be stashed first.}
+                \end{itemize}
+            \item{To rebase instead of merge replace \verb!git merge! \ldots with:}
+                \begin{enumerate}
+                    \item{\verb!git checkout <TASK-ID>!}
+                    \item{\verb!git rebase master!}
+                    \item{\verb!git checkout master!}
+                    \item{\verb!git merge <TASK-ID>!}
+                \end{enumerate}
+            \item{Use \verb!git commit -v! to show the diff of the changes
+                while editing the commit message.}
+            \item{Use \verb!git rebase -i master! to rebase your current branch
+                onto the newest commits in the master.}
+        \end{itemize}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Finding a commit that introduced a bug (Manually)}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{enumerate}
+            \item{\verb!git bisect start!}
+            \item{\verb!git bisect bad!}
+            \item{\verb!git bisect good <commit_id>!}
+            \item{For each commit bisect makes you examine:}
+                \begin{itemize}
+                    \item{Run tests.}
+                    \item{If tests fail: \verb!git bisect bad!}
+                    \item{If tests pass: \verb!git bisect good!}
+                \end{itemize}
+            \item{When done: \verb!git bisect reset!}
+        \end{enumerate}
+        \textbf{\large{Finding a commit that introduced a bug (Automated)}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{enumerate}
+            \item{\verb!git bisect start HEAD <commit_id>!}
+            \item{\verb!git bisect run <test_script>!}
+            \item{When done: \verb!git bisect reset!}
+        \end{enumerate}
+        \normalsize{The test script must return 0 upon success or anything
+        from 1-127 excluding 125 for failure.  Exit code 125 means the source
+        cannot be tested, therefore that revision is skipped.}
+        \textbf{\large{Gotchas/Tips}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{itemize}
+            \item{Never rebase or amend commits that have already been pushed
+                to the server}
+            \item{Try to keep commits small.  This makes moving changes between
+                branches easier}
+            \item{Create aliases for complex commands that are used often,
+                such as showing the log history as a graph or the merge
+                statement in the basic git workflow.}
+            \item{Read the command output as it will give you instructions for
+                what to do.  For example, the output of ``git status'' will
+                tell you how to un-stage a file and more.}
+        \end{itemize}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Tags}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Create an annotated tag]
+                {\verb!git tag -a <tag_name> -m '<description>'!}
+            \item[List current tags:]
+                {\verb!git tag -l!}
+            \item[Delete a tag:]
+                {\verb!git tag -d <tag_name>!}
+            \item[Push tags to the server:]
+                {\verb!git push origin --tags!}
+        \end{description}
+        \textbf{\large{Additional Information}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Git Book:]{\url{http://git-scm.com/book}}
+            \item[Notes about git commit messages:]
+                {\url{http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html}}
+            \item[Some git tips:]
+                {\url{http://mislav.uniqpath.com/2010/07/git-tips/}}
+            \item[Git log formatting tips:]
+                {\url{http://www.jukie.net/bart/blog/pimping-out-git-log}}
+            \item[Merge vs. Rebase:]
+                {Several comparisons of the two different techniques for
+                combining changes from topic branches into the master branch.}
+                \begin{itemize}
+                    \item{\href{http://gitguru.com/2009/02/03/rebase-v-merge-in-git/}
+                          {Rebase vs. Merge in git}}
+                    \item{\href{http://www.jarrodspillers.com/2009/08/19/git-merge-vs-git-rebase-avoiding-rebase-hell/}
+                          {Git-merge vs. git-rebase: Avoiding Rebase Hell}}
+                    \item{\href{http://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git-merge-and-rebase/}
+                          {Use gitk to understand git merge and rebase}}
+                \end{itemize}
+        \end{description}
+        \textbf{\large{Configuration}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Aliases:]
+                {\begin{verbatim}
+[alias]
+    co = commit -v
+    me = merge --no-ff --no-commit\end{verbatim}}
+            \item[Merge Option:]
+                {\begin{verbatim}
+[merge]
+	conflictstyle = diff3\end{verbatim}}
+        \end{description}
+    \end{flushleft}
+\end{tabular*}
+
+\begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
+    \begin{flushleft}
+        \textbf{\large{Commits}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Delete last N commits; unstage the changes:]
+                {\verb!git reset HEAD~N!}
+            \item[Delete last N commits; keep staged changes:]
+                {\verb!git reset --soft HEAD~N!}
+            \item[Delete last N commits:]
+                {\verb!git reset --hard HEAD~N!}
+            \item[Modify the last commit:]
+                {\verb!git commit --amend!}
+            \item[Modify a series of commits:]
+                {\verb!git rebase -i <start_rev>!}
+                \begin{itemize}
+                    \item{Read the git book for more information before trying
+                        this command!}
+                \end{itemize}
+            \item[View the details of a specific commit:]
+                {\verb!git show <commit_id>!}
+            \item[Copy a commit to the current branch:]
+                {\verb!git cherry-pick <commit_id>!}
+            \item[Remove a file from every commit:]
+                {\verb!git filter-branch --tree-filter!
+                 \verb!'rm -f <filename>' HEAD!}
+                \begin{itemize}
+                    \item{Use this command only when necessary!}
+                    \item{Other developers should not be using the tree when
+                        this is occurring and download a new clone after the
+                        changes have been made.}
+                \end{itemize}
+            \item[Go back to a previous version of a single file:]
+                {\verb!git checkout <version> <filename>!}
+        \end{description}
+        \textbf{\large{Log/History}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[View the log for the current branch:]
+                {\verb!git log!}
+            \item[View the log as a graph:]
+                {\verb!git log --graph --oneline!}
+            \item[Git log with graph and more information:]
+                 {\verb!git log --graph!
+                  \verb!--pretty=format:'\t%Cred%h!
+                  \verb!%Cgreen(%ad)%Creset!
+                  \verb!|%C(yellow)%d%Creset!
+                  \verb!%s %C(bold blue)<%an>%Creset'!
+                  \verb!--abbrev-commit --date=short!}
+            \item[Show who modified a file:]
+                {\verb!git blame!}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Uncommitted Changes}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Show diff of unstanged changes:]
+                {\verb!git diff!}
+            \item[Show diff of stanged changes:]
+                {\verb!git diff --stage!}
+            \item[Stage a file to be committed:]
+                {\verb!git add <filename>!}
+            \item[Stage files interactively:]
+                {\verb!git add -i!}
+            \item[Remove deleted files from git:]
+                {\verb!git add -u!}
+            \item[Unstage a file:]
+                {\verb!git reset HEAD <file>!}
+            \item[Reset the current working directory:]
+                {\verb!git reset --hard!}
+                \begin{itemize}
+                    \item{WARNING: Unsaved changes will be lost!}
+                \end{itemize}
+            \item[Discard changes to a single file]
+                {\verb!git checkout -- <file>!}
+            \item[Stash changes temporarily:]
+                {\verb!git stash!}
+            \item[Apply stashed changes:]
+                {\verb!git stash apply!}
+            \item[Clear the stash:]
+                {\verb!git stash clear!}
+        \end{description}
+        \textbf{\large{Branches}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[List local branches:]
+                {\verb!git branch!}
+            \item[Show details about all branches:]
+                {\verb!git branch -a!}
+            \item[Show which branches have not been merged:]
+                {\verb!git branch --no-merged!}
+            \item[Delete a local branch:]
+                {\verb!git branch -d <branch_name>!}
+            \item[Switch to a branch:]
+                {\verb!git checkout <branch_name>!}
+            \item[Create a branch from a tag:]
+                {\verb!git checkout <branch_name> <tag_name>!}
+            \item[Checkout a remote branch:]
+                {\verb!git checkout --track origin/<br_name>!}
+            \item[Push a branch to the server:]
+                {\verb!git push origin <br_name>!}
+            \item[Rename a branch:]
+                {\verb!git branch -m <new_name>!}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Other}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Open the git gui:]
+                {\verb!git gui!}
+            \item[Get a list of files that changed:]
+                {\verb!git log --name-only --pretty=oneline!
+                 \verb!--full-index <start_rev>..<end_rev>!
+                 \verb!| grep -vE '^[0-9a-f]{40} '!
+                 \verb!| sort | uniq!}
+             \item[Create an archive from a git repo:]
+                 {\verb!git archive <revision>!}
+                 \begin{itemize}
+                     \item{Supports the following formats:}
+                         \begin{itemize}
+                             \item{tar}
+                             \item{tar.gz}
+                             \item{zip}
+                         \end{itemize}
+                 \end{itemize}
+             \item[Get a ``version id'' for the current commit:]
+                 {\verb!git describe --always --tags!}
+        \end{description}
+        \textbf{\large{Repositories/Remotes}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Clone a new repository:]
+                {\verb!git clone <repository_url>!}
+            \item[Show information about remotes:]
+                {\verb!git remote show origin!}
+            \item[Show the URLs for the remotes:]
+                {\verb!git remote -v!}
+            \item[Add a remote:]
+                {\verb!git remote add <name> <url>!}
+            \item[Remove a remote:]
+                {\verb!git remote rm <name>!}
+            \item[Download changes for all branches:]
+                {\verb!git fetch!}
+                \begin{itemize}
+                    \item{Good for reviewing changes before applying them.
+                          E.g. \verb!git diff master origin/master!}
+                    \item{Will need to do a \verb!git merge! or
+                        \verb!git rebase! to apply the changes.}
+                \end{itemize}
+        \end{description}
+        \textbf{\large{File Management}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Delete a file:]
+                {\verb!git rm <file>!}
+            \item[Move a file:]
+                {\verb!git mv <from> <to>!}
+            \item[Clean untracked files from current dir:]
+                {\verb!git clean -f!}
+        \end{description}
+    \end{flushleft}
+\end{tabular*}
+
+\end{document}

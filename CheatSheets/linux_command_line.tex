@@ -1,0 +1,183 @@
+\documentclass[landscape]{article}
+
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+
+\geometry{top=.5in,left=.5in,right=.5in,bottom=.5in}
+
+\begin{document}
+
+\begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
+    \begin{flushleft}
+        \textbf{\large{Basic Command Examples}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Extract a field from a delimited file:]
+                {\verb!cut -d <delim> -f <field_num>!}
+            \item[Extract a range characters from a file]
+                {\verb!cut -c <start>-<finish>!}
+            \item[Find files that were modified today:]
+                {\verb!find . -type f -mtime 0!}
+            \item[Perform an action on a subset of files:]
+                {\verb!find . -type f | head -n 10!
+                 \verb!| xargs -I {} <cmd>!}
+            \item[Use piping in find + exec:]
+                {\verb!find . -exec sh -c!
+                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
+            \item[Use piping with xargs:]
+                {\verb!<cmd> | xargs -I {} sh -c!
+                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
+             \item[Determine if a file is being used:]
+                 {\verb!lsof -V <filename>!}
+             \item[Grep with line numbers and context:]
+                 {\verb!grep -nA <num_lines> <pattern> *!}
+             \item[Create a named pipe:]
+                 {\verb!mkfifo <name>!}
+             \item[Show all ports in use:]
+                 {\verb!netstat -alp!}
+             \item[Show port statistics:]
+                 {\verb!netstat -s!}
+             \item[Character substitution:]
+                 {\verb!tr '<from>' '<to>'!}
+             \item[Delete characters:]
+                 {\verb!tr '<char>' -d!}
+             \item[Show processes as a tree:]
+                 {\verb!pstree -ap | grep -C <lines> <proc>!}
+             \item[Get the current time as a unix timestamp:]
+                 {\verb!date +%s!}
+             \item[Get the current time in ISO format:]
+                 {\verb!date +%F\ %T!}
+             \item[Execute cmd with watch and mark changes:]
+                 {\verb!watch -d '<cmd>'!}
+             \item[Merge two files together (columns):]
+                 {\verb!paste <file1> <file2>!}
+             \item[Execute a command as a different user:]
+                 {\verb!su -c <cmd>!}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Sed Examples}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Basic substitution:]
+                {\verb!sed -e 's/<old>/<new>/g' <input>!
+                 \verb!> <output>!}
+            \item[Delete lines:]
+                {\verb!sed -e '/<pattern>/d' <input>!}
+            \item[Multiple substitutions:]
+                {\verb!sed -e!
+                 \verb!'s/<old>/<new>/g;s/<old2>/<new2>/g'!
+                 \verb!<input>!}
+             \item[Modify a file in-place:]
+                {\verb!sed -i 's/<old>/<new>/g' <input>!}
+        \end{description}
+        \textbf{\large{tr Classes}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[alnum]
+                {Alphanumeric Characters}
+            \item[alpha]
+                {Alphabetic Characters}
+            \item[blank]
+                {Whitespace Characters}
+            \item[cntrl]
+                {Control Characters}
+            \item[digit]
+                {Numeric Characters}
+            \item[graph]
+                {Graphic Characters}
+            \item[lower]
+                {Lower-Case Alphabetic Characters}
+            \item[print]
+                {Printable Characters}
+            \item[punct]
+                {Punctuation Characters}
+            \item[space]
+                {Space Characters}
+            \item[upper]
+                {Upper-Case Alphabetic Characters}
+            \item[xdigit]
+                {Hexadecimal Characters}
+        \end{description}
+        \textbf{\large{Basic FTP Commands}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[\texttt{ascii}]
+                {Set the transfer type to ascii.}
+            \item[\texttt{bell}]
+                {Sound an alarm when transfer is finished.}
+            \item[\texttt{binary}]
+                {Set the transfer type to binary.}
+            \item[\texttt{cd <directory>}]
+                {Change remote directory.}
+            \item[\texttt{exit}]
+                {Exit the FTP client.}
+            \item[\texttt{get}]
+                {Download a file from the server.}
+            \item[\texttt{lcd}]
+                {Change local directory.}
+            \item[\texttt{put}]
+                {Upload a file to the server.}
+            \item[\texttt{tick}]
+                {Display the number of bytes transferred.}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{Bash Tricks}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[One-line for loop:]
+                {\verb!for file in *; do <cmd>; done!}
+            \item[Use the output of one command in another:]
+                {\verb!echo 'foo' > `date +%s`.txt!}
+            \item[Same, but using pipes:]
+                {\verb!diff <(find /dir1) <(find /dir2)!
+                 \verb!tar cvf >(gzip -c > dir.tgz) dir!}
+            \item[Fix a mistake in the previous command:]
+                {\verb!^old^new!}
+            \item[Use the last arg. from the last command:]
+                {\verb|rm !$|}
+            \item[Run command 2 if command 1 succeeds:]
+                {\verb!<cmd1> && <cmd23>!}
+            \item[Repeat command for every item in braces:]
+                {\verb!touch {1..10}.txt ; rm foo.{obj,bin,bar} ;!
+                 \verb!cp <file>{,.bak}!}
+            \item[Start/end of line:]
+                {\verb!Ctrl-A ; Ctrl-E!}
+            \item[Follow the execution of your shell script:]
+                {\verb|#!/bin/bash -x|}
+            \item[Time multiple commands:]
+                {\verb!time sh -c '<commands>'!}
+        \end{description}
+        \textbf{\large{Vim Specific Tips}}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Open a remote file using vim and ssh:]
+                {\verb!vim scp://user@host//path/to/file!}
+            \item[Open many files that match a pattern:]
+                {\verb!args **/*.java!}
+            \item[Modify the contents of the matched files:]
+                {\verb!argdo <command> | w!}
+            \item[Modify the contents of the opened buffers:]
+                {\verb!bufdo <command> | w!}
+            \item[Autocomplete Word:]
+                {\verb!Ctrl-n Ctrl-p!}
+            \item[Indent/Outdent (Insert Mode):]
+                {\verb!Ctrl-t, Ctrl-d!}
+            \item[Paste to command line:]
+                {\verb!Ctrl-r <reg>!}
+            \item[Replace with regsiter:]
+                {\verb!:s/string/\=@<reg>/!}
+        \end{description}
+    \end{flushleft}
+\end{tabular*}
+
+\end{document}
