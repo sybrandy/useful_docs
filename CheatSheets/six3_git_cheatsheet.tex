@@ -9,7 +9,7 @@
 
 \begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
     \begin{flushleft}
-        \textbf{\large{Git Workflow (Basic)}}
+        \textsc{Git Workflow (Basic)}
         \rule{2.9in}{.5pt}
         \normalsize{Change ``master'' to the name of your main development
         branch if it is not ``master''}
@@ -29,7 +29,7 @@
             \item{\verb!git push!}
         \end{enumerate}
 
-        \textbf{\large{Advanced Workflow Changes/Notes}}
+        \textsc{Advanced Workflow Changes/Notes}
         \rule{2.9in}{.5pt}
         \small
         \begin{itemize}
@@ -53,7 +53,7 @@
     \end{flushleft}
     &
     \begin{flushleft}
-        \textbf{\large{Finding a commit that introduced a bug (Manually)}}
+        \textsc{Finding a commit that introduced a bug (Manually)}
         \rule{2.9in}{.5pt}
         \small
         \begin{enumerate}
@@ -68,7 +68,7 @@
                 \end{itemize}
             \item{When done: \verb!git bisect reset!}
         \end{enumerate}
-        \textbf{\large{Finding a commit that introduced a bug (Automated)}}
+        \textsc{Finding a commit that introduced a bug (Automated)}
         \rule{2.9in}{.5pt}
         \small
         \begin{enumerate}
@@ -79,7 +79,7 @@
         \normalsize{The test script must return 0 upon success or anything
         from 1-127 excluding 125 for failure.  Exit code 125 means the source
         cannot be tested, therefore that revision is skipped.}
-        \textbf{\large{Gotchas/Tips}}
+        \textsc{Gotchas/Tips}
         \rule{2.9in}{.5pt}
         \small
         \begin{itemize}
@@ -97,7 +97,7 @@
     \end{flushleft}
     &
     \begin{flushleft}
-        \textbf{\large{Tags}}
+        \textsc{Tags}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -112,7 +112,7 @@
             \item[Delete remote tags:]
                 {\verb!git push origin :refs/tags/<tag>!}
         \end{description}
-        \textbf{\large{Additional Information}}
+        \textsc{Additional Information}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -127,15 +127,11 @@
                 {Several comparisons of the two different techniques for
                 combining changes from topic branches into the master branch.}
                 \begin{itemize}
-                    \item{\href{http://gitguru.com/2009/02/03/rebase-v-merge-in-git/}
-                          {Rebase vs. Merge in git}}
-                    \item{\href{http://www.jarrodspillers.com/2009/08/19/git-merge-vs-git-rebase-avoiding-rebase-hell/}
-                          {Git-merge vs. git-rebase: Avoiding Rebase Hell}}
                     \item{\href{http://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git-merge-and-rebase/}
                           {Use gitk to understand git merge and rebase}}
                 \end{itemize}
         \end{description}
-        \textbf{\large{Configuration}}
+        \textsc{Configuration}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -154,7 +150,7 @@
 
 \begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
     \begin{flushleft}
-        \textbf{\large{Commits}}
+        \textsc{Commits}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -188,7 +184,7 @@
             \item[Go back to a previous version of a single file:]
                 {\verb!git checkout <version> <filename>!}
         \end{description}
-        \textbf{\large{Log/History}}
+        \textsc{Log/History}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -209,7 +205,7 @@
     \end{flushleft}
     &
     \begin{flushleft}
-        \textbf{\large{Uncommitted Changes}}
+        \textsc{Uncommitted Changes}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -239,7 +235,7 @@
             \item[Clear the stash:]
                 {\verb!git stash clear!}
         \end{description}
-        \textbf{\large{Branches}}
+        \textsc{Branches}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -265,7 +261,7 @@
     \end{flushleft}
     &
     \begin{flushleft}
-        \textbf{\large{Other}}
+        \textsc{Other}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -289,7 +285,7 @@
              \item[Get a ``version id'' for the current commit:]
                  {\verb!git describe --always --tags!}
         \end{description}
-        \textbf{\large{Repositories/Remotes}}
+        \textsc{Repositories/Remotes}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
@@ -312,7 +308,7 @@
                         \verb!git rebase! to apply the changes.}
                 \end{itemize}
         \end{description}
-        \textbf{\large{File Management}}
+        \textsc{File Management}
         \rule{2.9in}{.5pt}
         \small
         \begin{description}
