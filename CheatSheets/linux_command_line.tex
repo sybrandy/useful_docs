@@ -22,18 +22,10 @@
             \item[Perform an action on a subset of files:]
                 {\verb!find . -type f | head -n 10!
                  \verb!| xargs -I {} <cmd>!}
-            \item[Use piping in find + exec:]
-                {\verb!find . -exec sh -c!
-                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
-            \item[Use piping with xargs:]
-                {\verb!<cmd> | xargs -I {} sh -c!
-                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
              \item[Determine if a file is being used:]
                  {\verb!lsof -V <filename>!}
              \item[Grep with line numbers and context:]
                  {\verb!grep -nA <num_lines> <pattern> *!}
-             \item[Create a named pipe:]
-                 {\verb!mkfifo <name>!}
              \item[Show all ports in use:]
                  {\verb!netstat -alp!}
              \item[Show port statistics:]
@@ -176,6 +168,49 @@
                 {\verb!Ctrl-r <reg>!}
             \item[Replace with regsiter:]
                 {\verb!:s/string/\=@<reg>/!}
+        \end{description}
+    \end{flushleft}
+\end{tabular*}
+
+\begin{tabular*}{10.5in}{|p{2.9in}|p{2.9in}|p{2.9in}|}
+    \begin{flushleft}
+        \textbf{\large{Redirection}/Processes}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Create a named pipe:]
+                {\verb!mkfifo <name>!}
+            \item[Process Substitution (Ex):]
+                {\verb!diff <(cat foo.txt) <(cat bar.txt)!}
+            \item[Use piping in find + exec:]
+                {\verb!find . -exec sh -c!
+                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
+            \item[Use piping with xargs:]
+                {\verb!<cmd> | xargs -I {} sh -c!
+                 \verb!'grep "$1" > "$1.out"' -- {} \;!}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{}SSH Tips}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Copy IDs:]
+                {\verb!ssh-copy-id -i <pub_key> user@host!}
+        \end{description}
+    \end{flushleft}
+    &
+    \begin{flushleft}
+        \textbf{\large{}File/Dir/Disk Tips}
+        \rule{2.9in}{.5pt}
+        \small
+        \begin{description}
+            \item[Find largest files/dirs:]
+                {\verb!du -hsx * | sort -rh | head -10!}
+            \item[Same, using find:]
+                {\verb!find <dir> -print '%s %p\n'!
+                 \verb!| sort -nr | head -10!}
         \end{description}
     \end{flushleft}
 \end{tabular*}
