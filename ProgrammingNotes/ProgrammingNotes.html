@@ -101,6 +101,10 @@
                     <li><a href="#immVsConstParams">Immutable vs. Const
                         Parameters</a></li>
                 </ol>
+                <li><a href="#go">Go</a></li>
+                <ol>
+                    <li><a href="#channels">Channel Code</a></li>
+                </ol>
                 <li><a href="#scala">Scala</a></li>
                 <ol>
                     <li><a href="#sgotchas">Gotchas</a></li>
@@ -760,6 +764,33 @@ void prettyPrint (T) (T str) if (isSomeString!T)
     usefulFunction(to!string (str));
     // no-op if already immutable
 } </pre>
+            </section>
+        </section>
+        <section>
+            <h1 id="go">Go</h1>
+            <section>
+                <h2 id="channels">Channel Code</h2>
+                <pre>
+// Creating a channel
+chan1 := make(chan string)
+chan2 := make(chan string)
+
+// Sending messages
+chan1 <- msg
+
+// Receiving messages
+msg := <-chan2
+
+// Select block with timeout
+select {
+case msg1 := <-chan1:
+    // Do something here
+case msg2 := <-chan2:
+    // Do something here
+case <-time.After(30 * time.Second):\
+    // Handle the timeout here
+}
+                </pre>
             </section>
         </section>
         <section>
