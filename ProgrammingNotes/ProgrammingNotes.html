@@ -103,6 +103,7 @@
                 </ol>
                 <li><a href="#go">Go</a></li>
                 <ol>
+                    <li><a href="#goqh">Quick Hits</a></li>
                     <li><a href="#channels">Channel Code</a></li>
                 </ol>
                 <li><a href="#scala">Scala</a></li>
@@ -769,6 +770,15 @@ void prettyPrint (T) (T str) if (isSomeString!T)
         <section>
             <h1 id="go">Go</h1>
             <section>
+                <h2 id="goqh">Quick Hits</h2>
+                <ul>
+                    <li>Ensure type implements interface at compile time:</li>
+                    <ul>
+                        <li><pre>var _ Type = &Type{}</pre></li>
+                    </ul>
+                </ul>
+            </section>
+            <section>
                 <h2 id="channels">Channel Code</h2>
                 <pre>
 // Creating a channel
@@ -777,6 +787,14 @@ chan2 := make(chan string)
 
 // Sending messages
 chan1 <- msg
+
+// Select block with default
+select {
+case chan1 <- msg
+    // Do something here
+default:
+    // Handle the default case.
+}
 
 // Receiving messages
 msg := <-chan2
@@ -789,6 +807,14 @@ case msg2 := <-chan2:
     // Do something here
 case <-time.After(30 * time.Second):\
     // Handle the timeout here
+}
+
+// Select block with default
+select {
+case msg1 := <-chan1:
+    // Do something here
+default:
+    // Handle the default case.
 }
                 </pre>
             </section>
