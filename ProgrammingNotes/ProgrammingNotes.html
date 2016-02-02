@@ -105,6 +105,7 @@
                 <ol>
                     <li><a href="#goqh">Quick Hits</a></li>
                     <li><a href="#channels">Channel Code</a></li>
+                    <li><a href="#fileexist">File Exists</a></li>
                 </ol>
                 <li><a href="#scala">Scala</a></li>
                 <ol>
@@ -815,6 +816,15 @@ case msg1 := <-chan1:
     // Do something here
 default:
     // Handle the default case.
+}
+                </pre>
+            </section>
+            <section>
+                <h2 id="fileexist">File Exists</h2>
+                <pre>
+err := os.Stat("/path/to/file")
+if os.IsNotExist(err) {
+    // File does not exist
 }
                 </pre>
             </section>
